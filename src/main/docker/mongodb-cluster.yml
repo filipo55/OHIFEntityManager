@@ -1,0 +1,16 @@
+version: '2'
+services:
+  ohifentitymanager-mongodb:
+    image: mongo:4.0.10
+    ports:
+      - '27017:27017'
+    command: mongos --configdb ohifentitymanager-mongodb-config
+  ohifentitymanager-mongodb-node:
+    build:
+      context: .
+      dockerfile: mongodb/MongoDB.Dockerfile
+    command: mongod --replSet rs1 --noprealloc --smallfiles
+  ohifentitymanager-mongodb-config:
+    image: mongo:4.0.10
+    container_name: ohifentitymanager-mongodb-config
+    command: mongod --noprealloc --smallfiles --configsvr --dbpath /data/db

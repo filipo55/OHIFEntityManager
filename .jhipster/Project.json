@@ -1,0 +1,30 @@
+{
+    "name": "Project",
+    "fields": [
+        {
+            "fieldName": "xnatId",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "name",
+            "fieldType": "String"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "subject",
+            "otherEntityRelationshipName": "project",
+            "relationshipName": "subject"
+        }
+    ],
+    "changelogDate": "20191019144354",
+    "entityTableName": "project",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

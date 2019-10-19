@@ -1,0 +1,47 @@
+{
+    "name": "Experiment",
+    "fields": [
+        {
+            "fieldName": "xnatId",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "name",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "dateCreated",
+            "fieldType": "LocalDate"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipName": "subject",
+            "otherEntityName": "subject",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "descriptor",
+            "otherEntityRelationshipName": "experiment",
+            "relationshipName": "descriptor"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "subject",
+            "otherEntityRelationshipName": "experiment",
+            "relationshipName": "subject",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20191019144355",
+    "entityTableName": "experiment",
+    "dto": "no",
+    "pagination": "pagination",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

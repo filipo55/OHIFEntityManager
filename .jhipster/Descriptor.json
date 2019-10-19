@@ -1,0 +1,37 @@
+{
+    "name": "Descriptor",
+    "fields": [
+        {
+            "fieldName": "name",
+            "fieldType": "String"
+        },
+        {
+            "fieldName": "value",
+            "fieldType": "Float"
+        }
+    ],
+    "relationships": [
+        {
+            "relationshipName": "experiment",
+            "otherEntityName": "experiment",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "experiment",
+            "otherEntityRelationshipName": "descriptor",
+            "relationshipName": "experiment",
+            "otherEntityField": "id"
+        }
+    ],
+    "changelogDate": "20191019144356",
+    "entityTableName": "descriptor",
+    "dto": "no",
+    "pagination": "infinite-scroll",
+    "service": "serviceClass",
+    "jpaMetamodelFiltering": true,
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "applications": "*"
+}

@@ -6,6 +6,22 @@ import applicationProfile, { ApplicationProfileState } from './application-profi
 
 import administration, { AdministrationState } from 'app/modules/administration/administration.reducer';
 import userManagement, { UserManagementState } from './user-management';
+// prettier-ignore
+import subject, {
+  SubjectState
+} from 'app/entities/subject/subject.reducer';
+// prettier-ignore
+import project, {
+  ProjectState
+} from 'app/entities/project/project.reducer';
+// prettier-ignore
+import experiment, {
+  ExperimentState
+} from 'app/entities/experiment/experiment.reducer';
+// prettier-ignore
+import descriptor, {
+  DescriptorState
+} from 'app/entities/descriptor/descriptor.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 export interface IRootState {
@@ -13,6 +29,10 @@ export interface IRootState {
   readonly applicationProfile: ApplicationProfileState;
   readonly administration: AdministrationState;
   readonly userManagement: UserManagementState;
+  readonly subject: SubjectState;
+  readonly project: ProjectState;
+  readonly experiment: ExperimentState;
+  readonly descriptor: DescriptorState;
   /* jhipster-needle-add-reducer-type - JHipster will add reducer type here */
   readonly loadingBar: any;
 }
@@ -22,6 +42,10 @@ const rootReducer = combineReducers<IRootState>({
   applicationProfile,
   administration,
   userManagement,
+  subject,
+  project,
+  experiment,
+  descriptor,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   loadingBar
 });

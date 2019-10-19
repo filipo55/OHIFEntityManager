@@ -99,6 +99,7 @@ public class SubjectResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+
     /**
      * {@code GET  /subjects/:id} : get the "id" subject.
      *

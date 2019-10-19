@@ -99,6 +99,14 @@ public class ProjectResource {
         return ResponseEntity.ok().headers(headers).body(page.getContent());
     }
 
+
+    @GetMapping("/projects/all")
+    public ResponseEntity<List<Project>> getAllProjectsAsList() {
+        log.debug("REST request to find all projects");
+        List<Project> requestsFounded = projectService.findAll();
+        return ResponseUtil.wrapOrNotFound(Optional.ofNullable(requestsFounded));
+    }
+
     /**
      * {@code GET  /projects/:id} : get the "id" project.
      *

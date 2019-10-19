@@ -9,6 +9,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -45,6 +46,12 @@ public class ProjectService {
     public Page<Project> findAll(Pageable pageable) {
         log.debug("Request to get all Projects");
         return projectRepository.findAll(pageable);
+    }
+
+    public List<Project> findAll()
+    {
+        log.debug("Request to get all Projects");
+        return  projectRepository.findAll();
     }
 
 

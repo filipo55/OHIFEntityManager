@@ -1,10 +1,13 @@
 package com.mycompany.myapp.service;
 
+import com.mycompany.myapp.domain.Project;
 import com.mycompany.myapp.domain.Subject;
 import com.mycompany.myapp.repository.SubjectRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -36,6 +39,8 @@ public class SubjectService {
 
     private final SubjectRepository subjectRepository;
 
+    @Autowired
+    ProjectService projectService;
 
     public SubjectService(SubjectRepository subjectRepository) {
         this.subjectRepository = subjectRepository;
@@ -84,5 +89,88 @@ public class SubjectService {
     public void delete(String id) {
         log.debug("Request to delete Subject : {}", id);
         subjectRepository.deleteById(id);
+    }
+
+    public void Sync(JSONArray resultsArray) throws IOException, JSONException, ParseException {
+
+        if (resultsArray != null) {
+
+            //Check if projects are matching db
+            for (int i =0; i< resultsArray.length();i++)
+            {
+
+                JSONObject temp = resultsArray.getJSONObject(i);
+                String name = temp.getString("label");
+                String projectID = temp.getString("project");
+                String xnatID = temp.getString("ID");
+                Subject subject = findOneByXnatID(xnatID);
+                if(subject != null)
+                {
+                    if(subject.getName().matches(name))
+                    {
+                        log.debug("Found project and the name matches as well :) : {}", xnatID);
+                    }
+                    else
+                    {
+                        subject.setName(name);
+                    }
+
+                    if(subject.getProject().getXnatId().matches(projectID))
+                    {
+                        log.debug("Found project and the project matches as well :) : {}", xnatID);
+                    }
+                    else
+                    {
+                        subject.setProject(projectService.findOneByXnatID(projectID));
+                    }
+                }
+                else
+                {
+
+                    subject = new Subject();
+                    subject.setName(name);
+                    subject.setXnatId(xnatID);
+                    subject.setProject(projectService.findOneByXnatID(projectID));
+                    save(subject);
+                }
+            }
+
+            //Remove obsolete subjects
+            boolean matches;
+            List<Subject> subjects = subjectRepository.findAll();
+            for(int i =0; i< subjects.size();i++)
+            {
+                matches = false;
+                for(int j = 0; j < resultsArray.length(); j++)
+                {
+                    JSONObject temp = resultsArray.getJSONObject(j);
+                    String xnatID = temp.getString("ID");
+                    if(subjects.get(i).getXnatId().matches(xnatID))
+                    {
+                        matches = true;
+                        break;
+                    }
+                }
+                if(!matches)
+                {
+
+                    delete(subjects.get(i).getId());
+                }
+            }
+        }
+    }
+
+    public Subject findOneByXnatID(String id)
+    {
+        log.debug("Request to get Project : {}", id);
+        List<Subject> subjects = subjectRepository.findAll();
+        for(int i =0; i< subjects.size();i++)
+        {
+            if(subjects.get(i).getXnatId().matches(id))
+            {
+                return subjects.get(i);
+            }
+        }
+        return null;
     }
 }

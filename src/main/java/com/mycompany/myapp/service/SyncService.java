@@ -58,18 +58,26 @@ public class SyncService {
     public void Sync() throws ParseException, IOException, JSONException
     {
         SyncProjects();
+        SyncSubjects();
 
     }
 
 
     public void SyncProjects() throws JSONException, ParseException, IOException
     {
-        projectService.Sync(findXnatProjects());
+        projectService.Sync(findXnatData("projects/"));
+
     }
 
-    private JSONArray findXnatProjects() throws IOException {
+    public void SyncSubjects() throws IOException, JSONException, ParseException {
+
+        subjectService.Sync(findXnatData("subjects/"));
+
+    }
+
+    private JSONArray findXnatData(String data) throws IOException {
         //Send http request
-        HttpGet request = new HttpGet("http://localhost:/data/archive/projects/");
+        HttpGet request = new HttpGet("http://localhost:/data/archive/" + data);
         HttpResponse response = client.execute(request);
 
 
@@ -89,4 +97,5 @@ public class SyncService {
         }
         return null;
     }
+
 }

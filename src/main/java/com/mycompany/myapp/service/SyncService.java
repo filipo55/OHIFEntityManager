@@ -1,6 +1,7 @@
 package com.mycompany.myapp.service;
 
 import com.mycompany.myapp.domain.Project;
+import com.mycompany.myapp.domain.Subject;
 import com.mycompany.myapp.repository.ProjectRepository;
 import org.apache.http.*;
 import org.apache.http.auth.AuthScope;
@@ -17,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.mongodb.core.aggregation.ArithmeticOperators;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
@@ -41,6 +43,9 @@ public class SyncService {
     @Autowired
     SubjectService subjectService;
 
+    @Autowired
+    ExperimentService experimentService;
+
     private HttpClient createHttpClient()
     {
         //Create http client
@@ -59,6 +64,7 @@ public class SyncService {
     {
         SyncProjects();
         SyncSubjects();
+        SyncExperiments();
 
     }
 
@@ -72,6 +78,15 @@ public class SyncService {
     public void SyncSubjects() throws IOException, JSONException, ParseException {
 
         subjectService.Sync(findXnatData("subjects/"));
+
+    }
+
+    public void SyncExperiments() throws IOException, JSONException, ParseException {
+        List<Subject> subjects = subjectService.findAll();
+        for(int i = 0; i< subjects.size(); i++)
+        {
+            experimentService.Sync(findXnatData("projects/"+subjects.get(i).getProject().getXnatId()+"/subjects/"+subjects.get(i).getXnatId()+"/experiments/"), subjects.get(i));
+        }
 
     }
 

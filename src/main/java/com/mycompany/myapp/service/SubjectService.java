@@ -69,6 +69,12 @@ public class SubjectService {
         return subjectRepository.findAll(pageable);
     }
 
+    public List<Subject> findAll()
+    {
+        log.debug("Request to get all Subjects");
+        return subjectRepository.findAll();
+    }
+
 
     /**
      * Get one subject by id.
@@ -95,7 +101,7 @@ public class SubjectService {
 
         if (resultsArray != null) {
 
-            //Check if projects are matching db
+            //Check if subjects are matching db
             for (int i =0; i< resultsArray.length();i++)
             {
 
@@ -108,7 +114,7 @@ public class SubjectService {
                 {
                     if(subject.getName().matches(name))
                     {
-                        log.debug("Found project and the name matches as well :) : {}", xnatID);
+                        log.debug("Found subject and the name matches as well :) : {}", xnatID);
                     }
                     else
                     {
@@ -117,7 +123,7 @@ public class SubjectService {
 
                     if(subject.getProject().getXnatId().matches(projectID))
                     {
-                        log.debug("Found project and the project matches as well :) : {}", xnatID);
+                        log.debug("Found subject and the project matches as well :) : {}", xnatID);
                     }
                     else
                     {
@@ -162,7 +168,7 @@ public class SubjectService {
 
     public Subject findOneByXnatID(String id)
     {
-        log.debug("Request to get Project : {}", id);
+        log.debug("Request to get Subject : {}", id);
         List<Subject> subjects = subjectRepository.findAll();
         for(int i =0; i< subjects.size();i++)
         {

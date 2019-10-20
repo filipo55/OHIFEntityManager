@@ -1,15 +1,22 @@
 package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Descriptor;
+import com.mycompany.myapp.domain.Experiment;
+import com.mycompany.myapp.service.CalculationService;
 import com.mycompany.myapp.service.DescriptorService;
+import com.mycompany.myapp.service.ExperimentService;
+import com.mycompany.myapp.service.SyncService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
@@ -18,10 +25,14 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.xml.sax.SAXException;
 
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
 
+import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 
@@ -41,6 +52,15 @@ public class DescriptorResource {
 
     private final DescriptorService descriptorService;
 
+    @Autowired
+    CalculationService calculationService;
+
+    @Autowired
+    ExperimentService experimentService;
+
+    @Autowired
+    SyncService syncService;
+
     public DescriptorResource(DescriptorService descriptorService) {
         this.descriptorService = descriptorService;
     }
@@ -48,17 +68,41 @@ public class DescriptorResource {
     /**
      * {@code POST  /descriptors} : Create a new descriptor.
      *
-     * @param descriptor the descriptor to create.
+     * @param JSON the descriptor to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new descriptor, or with status {@code 400 (Bad Request)} if the descriptor has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/descriptors")
-    public ResponseEntity<Descriptor> createDescriptor(@RequestBody Descriptor descriptor) throws URISyntaxException {
-        log.debug("REST request to save Descriptor : {}", descriptor);
-        if (descriptor.getId() != null) {
-            throw new BadRequestAlertException("A new descriptor cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-        Descriptor result = descriptorService.save(descriptor);
+    public ResponseEntity<Descriptor> createDescriptor(@RequestBody String JSON) throws URISyntaxException, IOException, SAXException, ParserConfigurationException, ParseException, JSONException {
+        log.debug("REST request to save Descriptor : {}");
+
+        //Sync with XNAT DB
+        syncService.Sync();
+
+        //Parse JSON
+        JSONObject obj = new JSONObject(JSON);
+        String projectID = obj.getString("projectId");
+        String subjectID = obj.getString("subjectId");
+        String experimentID = obj.getString("experimentId");
+        int height = obj.getInt("voxelZ");
+        String xml = obj.getString("XML");
+
+        //Area descriptor
+        double area = calculationService.CalculateDataFromFile(xml);
+        Descriptor areaDescriptor = new Descriptor();
+        areaDescriptor.setName("Area");
+        areaDescriptor.setValue((float) area);
+        Experiment experiment = experimentService.findOneByXnatID(experimentID);
+        areaDescriptor.setExperiment(experiment);
+        Descriptor result = descriptorService.save(areaDescriptor);
+
+        //Volume descriptor
+        Descriptor volumeDescriptor = new Descriptor();
+        volumeDescriptor.setName("Volume");
+        volumeDescriptor.setValue((float)calculationService.CalculateVolume(area,height));
+        volumeDescriptor.setExperiment(experiment);
+        descriptorService.save(volumeDescriptor);
+
         return ResponseEntity.created(new URI("/api/descriptors/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);

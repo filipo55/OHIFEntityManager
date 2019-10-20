@@ -37,8 +37,6 @@ public class ProjectService {
     private final ProjectRepository projectRepository;
 
 
-    private final HttpClient client = createHttpClient();
-
     public ProjectService(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
 
@@ -72,47 +70,9 @@ public class ProjectService {
         return  projectRepository.findAll();
     }
 
-    private HttpClient createHttpClient()
-    {
-        //Create http client
-        CredentialsProvider provider = new BasicCredentialsProvider();
-        UsernamePasswordCredentials credentials
-            = new UsernamePasswordCredentials("admin", "admin");
-        provider.setCredentials(AuthScope.ANY, credentials);
-
-        return HttpClientBuilder.create()
-            .setDefaultCredentialsProvider(provider)
-            .build();
-    }
-
-    private JSONArray findXnatProjects() throws IOException {
-        //Send http request
-        HttpGet request = new HttpGet("http://localhost:/data/archive/projects/");
-        HttpResponse response = client.execute(request);
 
 
-        System.out.println(response.getStatusLine().toString());
-
-        //Parse
-        HttpEntity entity = response.getEntity();
-        Header headers = entity.getContentType();
-        System.out.println(headers);
-        if (entity != null) {
-            // return it as a String
-            String result = EntityUtils.toString(entity);
-
-            JSONObject obj = new JSONObject(result);
-            JSONArray resultsArray = obj.getJSONObject("ResultSet").getJSONArray("Result");
-            return resultsArray;
-        }
-
-        return null;
-    }
-
-    public void Sync() throws IOException, JSONException, ParseException {
-
-
-        JSONArray resultsArray = findXnatProjects();
+    public void Sync(JSONArray resultsArray) throws IOException, JSONException, ParseException {
 
         if (resultsArray != null) {
 

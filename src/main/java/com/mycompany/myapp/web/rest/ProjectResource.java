@@ -2,6 +2,7 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Project;
 import com.mycompany.myapp.service.ProjectService;
+import com.mycompany.myapp.service.SyncService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -9,6 +10,7 @@ import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.data.domain.Page;
@@ -44,6 +46,9 @@ public class ProjectResource {
 
     private final ProjectService projectService;
 
+    @Autowired
+    SyncService syncService;
+
     public ProjectResource(ProjectService projectService) {
         this.projectService = projectService;
     }
@@ -62,7 +67,7 @@ public class ProjectResource {
             throw new BadRequestAlertException("A new project cannot already have an ID", ENTITY_NAME, "idexists");
         }
         Project result = projectService.save(project);
-        projectService.Sync();
+        syncService.SyncProjects();
         return ResponseEntity.created(new URI("/api/projects/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);

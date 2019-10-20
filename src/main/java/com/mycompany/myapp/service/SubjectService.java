@@ -8,8 +8,23 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-
+import org.apache.http.*;
+import org.apache.http.auth.AuthScope;
+import org.apache.http.auth.UsernamePasswordCredentials;
+import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpClient;
+import org.apache.http.impl.client.BasicCredentialsProvider;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
 import java.util.Optional;
+
+import java.io.IOException;
+import java.text.ParseException;
+import java.util.List;
+import java.util.Optional;
+import org.apache.http.client.methods.HttpGet;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 /**
  * Service Implementation for managing {@link Subject}.
@@ -21,9 +36,11 @@ public class SubjectService {
 
     private final SubjectRepository subjectRepository;
 
+
     public SubjectService(SubjectRepository subjectRepository) {
         this.subjectRepository = subjectRepository;
     }
+
 
     /**
      * Save a subject.

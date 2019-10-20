@@ -23,8 +23,6 @@ import java.text.ParseException;
 import java.util.List;
 import java.util.Optional;
 import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -38,6 +36,8 @@ public class ProjectService {
 
     private final ProjectRepository projectRepository;
 
+
+    private final HttpClient client = createHttpClient();
 
     public ProjectService(ProjectRepository projectRepository) {
         this.projectRepository = projectRepository;
@@ -72,51 +72,101 @@ public class ProjectService {
         return  projectRepository.findAll();
     }
 
-    public void Sync() throws IOException, JSONException, ParseException {
-
+    private HttpClient createHttpClient()
+    {
+        //Create http client
         CredentialsProvider provider = new BasicCredentialsProvider();
         UsernamePasswordCredentials credentials
             = new UsernamePasswordCredentials("admin", "admin");
         provider.setCredentials(AuthScope.ANY, credentials);
 
-        HttpClient client = HttpClientBuilder.create()
+        return HttpClientBuilder.create()
             .setDefaultCredentialsProvider(provider)
             .build();
+    }
 
+    private JSONArray findXnatProjects() throws IOException {
+        //Send http request
         HttpGet request = new HttpGet("http://localhost:/data/archive/projects/");
         HttpResponse response = client.execute(request);
 
 
         System.out.println(response.getStatusLine().toString());
 
+        //Parse
         HttpEntity entity = response.getEntity();
         Header headers = entity.getContentType();
         System.out.println(headers);
-
-
-        List<Project> projects = projectRepository.findAll();
-        
         if (entity != null) {
             // return it as a String
             String result = EntityUtils.toString(entity);
 
             JSONObject obj = new JSONObject(result);
             JSONArray resultsArray = obj.getJSONObject("ResultSet").getJSONArray("Result");
+            return resultsArray;
+        }
 
+        return null;
+    }
+
+    public void Sync() throws IOException, JSONException, ParseException {
+
+
+        JSONArray resultsArray = findXnatProjects();
+
+        if (resultsArray != null) {
+
+            //Check if projects are matching db
             for (int i =0; i< resultsArray.length();i++)
             {
 
                 JSONObject temp = resultsArray.getJSONObject(i);
                 String name = temp.getString("name");
                 String xnatID = temp.getString("ID");
-
-
+                Project project = findOneByXnatID(xnatID);
+                if(project != null)
+                {
+                    if(project.getName().matches(name))
+                    {
+                        log.debug("Found project and the name matches as well :) : {}", xnatID);
+                    }
+                    else
+                    {
+                        project.setName(name);
+                    }
+                }
+                else
+                {
+                    project = new Project();
+                    project.setName(name);
+                    project.setXnatId(xnatID);
+                    save(project);
+                }
             }
 
-            System.out.println(result);
+            //Remove obsolete projects
+            boolean matches;
+            List<Project> projects = projectRepository.findAll();
+            for(int i =0; i< projects.size();i++)
+            {
+                matches = false;
+                for(int j = 0; j < resultsArray.length(); j++)
+                {
+                    JSONObject temp = resultsArray.getJSONObject(j);
+                    String xnatID = temp.getString("ID");
+                    if(projects.get(i).getXnatId().matches(xnatID))
+                    {
+                        matches = true;
+                        break;
+                    }
+                }
+                if(!matches)
+                {
+
+                    delete(projects.get(i).getId());
+                }
+            }
         }
-
-
     }
 
     /**
@@ -128,6 +178,20 @@ public class ProjectService {
     public Optional<Project> findOne(String id) {
         log.debug("Request to get Project : {}", id);
         return projectRepository.findById(id);
+    }
+
+    public Project findOneByXnatID(String id)
+    {
+        log.debug("Request to get Project : {}", id);
+        List<Project> projects = projectRepository.findAll();
+        for(int i =0; i< projects.size();i++)
+        {
+            if(projects.get(i).getXnatId().matches(id))
+            {
+                return projects.get(i);
+            }
+        }
+        return null;
     }
 
     /**

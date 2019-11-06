@@ -17,6 +17,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.util.UriComponentsBuilder;
 import org.springframework.http.ResponseEntity;
@@ -115,6 +116,15 @@ public class ProjectResource {
         return ResponseUtil.wrapOrNotFound(Optional.ofNullable(requestsFounded));
     }
 
+    @GetMapping(value = "/projects/xml/all", produces = { "application/xml" } )
+    public List<Project> getProjectsInXml()
+    {
+        log.debug("REST request to get Projects with xml");
+        List<Project> requestsFounded = projectService.findAll();
+
+        return requestsFounded;
+    }
+
     /**
      * {@code GET  /projects/:id} : get the "id" project.
      *
@@ -127,6 +137,7 @@ public class ProjectResource {
         Optional<Project> project = projectService.findOne(id);
         return ResponseUtil.wrapOrNotFound(project);
     }
+
 
     /**
      * {@code DELETE  /projects/:id} : delete the "id" project.

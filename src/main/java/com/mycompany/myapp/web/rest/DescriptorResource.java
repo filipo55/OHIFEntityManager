@@ -2,10 +2,9 @@ package com.mycompany.myapp.web.rest;
 
 import com.mycompany.myapp.domain.Descriptor;
 import com.mycompany.myapp.domain.Experiment;
-import com.mycompany.myapp.service.CalculationService;
-import com.mycompany.myapp.service.DescriptorService;
-import com.mycompany.myapp.service.ExperimentService;
-import com.mycompany.myapp.service.SyncService;
+import com.mycompany.myapp.domain.Measurement;
+import com.mycompany.myapp.domain.MeasurementType;
+import com.mycompany.myapp.service.*;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -59,6 +58,9 @@ public class DescriptorResource {
     ExperimentService experimentService;
 
     @Autowired
+    MeasurementService measurementService;
+
+    @Autowired
     SyncService syncService;
 
     public DescriptorResource(DescriptorService descriptorService) {
@@ -85,27 +87,48 @@ public class DescriptorResource {
         String subjectID = obj.getString("subjectId");
         String experimentID = obj.getString("experimentId");
         int height = obj.getInt("voxelZ");
-        String xml = obj.getString("XML");
+        String xml = obj.getString("xml");
 
-        //Area descriptor
-        double area = calculationService.CalculateDataFromFile(xml);
-        Descriptor areaDescriptor = new Descriptor();
-        areaDescriptor.setName("Area");
-        areaDescriptor.setValue((float) area);
         Experiment experiment = experimentService.findOneByXnatID(experimentID);
-        areaDescriptor.setExperiment(experiment);
-        Descriptor result = descriptorService.save(areaDescriptor);
+        List<String> measurements = calculationService.generateMeasurements(xml);
 
-        //Volume descriptor
-        Descriptor volumeDescriptor = new Descriptor();
-        volumeDescriptor.setName("Volume");
-        volumeDescriptor.setValue((float)calculationService.CalculateVolume(area,height));
-        volumeDescriptor.setExperiment(experiment);
-        descriptorService.save(volumeDescriptor);
+        for(int i =0; i<measurements.size();i++)
+        {
+            Measurement measurement = new Measurement();
+            measurement.setExperiment(experiment);
+            measurement.setName(measurements.get(i));
+            if(measurements.get(i).contains("Lesion"))
+            {
+                measurement.setType(MeasurementType.LESION);
+            }
+            else if(measurements.get(i).contains("Cancer"))
+            {
+                measurement.setType(MeasurementType.CANCER);
+                measurement = measurementService.save(measurement);
+            }
+            //Area descriptor
+            double area = calculationService.CalculateDataFromFile(xml, measurement.getName());
+            Descriptor areaDescriptor = new Descriptor();
+            areaDescriptor.setName("Area");
+            areaDescriptor.setValue((float) area);
+            areaDescriptor.setMeasurement(measurement);
+            descriptorService.save(areaDescriptor);
 
-        return ResponseEntity.created(new URI("/api/descriptors/" + result.getId()))
-            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-            .body(result);
+            //Volume descriptor
+            Descriptor volumeDescriptor = new Descriptor();
+            volumeDescriptor.setName("Volume");
+            volumeDescriptor.setValue((float)calculationService.CalculateVolume(area,height));
+            volumeDescriptor.setMeasurement(measurement);
+            descriptorService.save(volumeDescriptor);
+        }
+
+
+
+        return (ResponseEntity<Descriptor>) ResponseEntity.ok();
+
+//        return ResponseEntity.created(new URI("/api/descriptors/" + result.getId()))
+//            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+//            .body(result);
     }
 
     /**

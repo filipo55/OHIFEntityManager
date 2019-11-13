@@ -25,9 +25,9 @@ public class Descriptor implements Serializable {
     private Float value;
 
     @DBRef
-    @Field("experiment")
+    @Field("measurement")
     @JsonIgnoreProperties("descriptors")
-    private Experiment experiment;
+    private Measurement measurement;
 
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
@@ -65,17 +65,17 @@ public class Descriptor implements Serializable {
         this.value = value;
     }
 
-    public Experiment getExperiment() {
-        return experiment;
+    public Measurement getMeasurement() {
+        return measurement;
     }
 
-    public Descriptor experiment(Experiment experiment) {
-        this.experiment = experiment;
+    public Descriptor measurement(Measurement measurement) {
+        this.measurement = measurement;
         return this;
     }
 
-    public void setExperiment(Experiment experiment) {
-        this.experiment = experiment;
+    public void setMeasurement(Measurement measurement) {
+        this.measurement = measurement;
     }
 
 

@@ -8,6 +8,7 @@ import Subject from './subject';
 import Project from './project';
 import Experiment from './experiment';
 import Descriptor from './descriptor';
+import Measurement from './measurement';
 /* jhipster-needle-add-route-import - JHipster will add routes here */
 
 const Routes = ({ match }) => (
@@ -18,6 +19,7 @@ const Routes = ({ match }) => (
       <ErrorBoundaryRoute path={`${match.url}/project`} component={Project} />
       <ErrorBoundaryRoute path={`${match.url}/experiment`} component={Experiment} />
       <ErrorBoundaryRoute path={`${match.url}/descriptor`} component={Descriptor} />
+      <ErrorBoundaryRoute path={`${match.url}/measurement`} component={Measurement} />
       {/* jhipster-needle-add-route-path - JHipster will add routes here */}
     </Switch>
   </div>

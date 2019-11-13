@@ -22,6 +22,10 @@ import experiment, {
 import descriptor, {
   DescriptorState
 } from 'app/entities/descriptor/descriptor.reducer';
+// prettier-ignore
+import measurement, {
+  MeasurementState
+} from 'app/entities/measurement/measurement.reducer';
 /* jhipster-needle-add-reducer-import - JHipster will add reducer here */
 
 export interface IRootState {
@@ -33,6 +37,7 @@ export interface IRootState {
   readonly project: ProjectState;
   readonly experiment: ExperimentState;
   readonly descriptor: DescriptorState;
+  readonly measurement: MeasurementState;
   /* jhipster-needle-add-reducer-type - JHipster will add reducer type here */
   readonly loadingBar: any;
 }
@@ -46,6 +51,7 @@ const rootReducer = combineReducers<IRootState>({
   project,
   experiment,
   descriptor,
+  measurement,
   /* jhipster-needle-add-reducer-combine - JHipster will add reducer here */
   loadingBar
 });

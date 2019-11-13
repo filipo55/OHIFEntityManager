@@ -36,9 +36,8 @@ public class Experiment implements Serializable {
     private Subject subject;
 
     @DBRef
-    @Field("descriptor")
-    private Set<Descriptor> descriptors = new HashSet<>();
-
+    @Field("measurement")
+    private Set<Measurement> measurements = new HashSet<>();
 
     // jhipster-needle-entity-add-field - JHipster will add fields here, do not remove
     public String getId() {
@@ -101,31 +100,31 @@ public class Experiment implements Serializable {
         this.subject = subject;
     }
 
-    public Set<Descriptor> getDescriptors() {
-        return descriptors;
+
+    public Set<Measurement> getMeasurements() {
+        return measurements;
     }
 
-    public Experiment descriptors(Set<Descriptor> descriptors) {
-        this.descriptors = descriptors;
+    public Experiment measurements(Set<Measurement> measurements) {
+        this.measurements = measurements;
         return this;
     }
 
-    public Experiment addDescriptor(Descriptor descriptor) {
-        this.descriptors.add(descriptor);
-        descriptor.setExperiment(this);
+    public Experiment addMeasurement(Measurement measurement) {
+        this.measurements.add(measurement);
+        measurement.setExperiment(this);
         return this;
     }
 
-    public Experiment removeDescriptor(Descriptor descriptor) {
-        this.descriptors.remove(descriptor);
-        descriptor.setExperiment(null);
+    public Experiment removeMeasurement(Measurement measurement) {
+        this.measurements.remove(measurement);
+        measurement.setExperiment(null);
         return this;
     }
 
-    public void setDescriptors(Set<Descriptor> descriptors) {
-        this.descriptors = descriptors;
+    public void setMeasurements(Set<Measurement> measurements) {
+        this.measurements = measurements;
     }
-
     // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here, do not remove
 
     @Override

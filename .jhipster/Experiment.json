@@ -1,5 +1,34 @@
 {
-    "name": "Experiment",
+    "fluentMethods": true,
+    "clientRootFolder": "",
+    "relationships": [
+        {
+            "relationshipName": "subject",
+            "otherEntityName": "subject",
+            "relationshipType": "many-to-one",
+            "otherEntityField": "id",
+            "otherEntityRelationshipName": "experiment"
+        },
+        {
+            "relationshipType": "one-to-many",
+            "otherEntityName": "descriptor",
+            "otherEntityRelationshipName": "experiment",
+            "relationshipName": "descriptor"
+        },
+        {
+            "relationshipType": "many-to-one",
+            "otherEntityName": "subject",
+            "otherEntityRelationshipName": "experiment",
+            "relationshipName": "subject",
+            "otherEntityField": "id"
+        },
+        {
+            "relationshipName": "measurement",
+            "otherEntityName": "measurement",
+            "relationshipType": "one-to-many",
+            "otherEntityRelationshipName": "experiment"
+        }
+    ],
     "fields": [
         {
             "fieldName": "xnatId",
@@ -14,34 +43,12 @@
             "fieldType": "LocalDate"
         }
     ],
-    "relationships": [
-        {
-            "relationshipName": "subject",
-            "otherEntityName": "subject",
-            "relationshipType": "many-to-one",
-            "otherEntityField": "id"
-        },
-        {
-            "relationshipType": "one-to-many",
-            "otherEntityName": "descriptor",
-            "otherEntityRelationshipName": "experiment",
-            "relationshipName": "descriptor"
-        },
-        {
-            "relationshipType": "many-to-one",
-            "otherEntityName": "subject",
-            "otherEntityRelationshipName": "experiment",
-            "relationshipName": "subject",
-            "otherEntityField": "id"
-        }
-    ],
     "changelogDate": "20191019144355",
-    "entityTableName": "experiment",
     "dto": "no",
-    "pagination": "pagination",
+    "searchEngine": false,
     "service": "serviceClass",
-    "jpaMetamodelFiltering": true,
-    "fluentMethods": true,
-    "clientRootFolder": "",
-    "applications": "*"
+    "entityTableName": "experiment",
+    "databaseType": "mongodb",
+    "jpaMetamodelFiltering": false,
+    "pagination": "pagination"
 }

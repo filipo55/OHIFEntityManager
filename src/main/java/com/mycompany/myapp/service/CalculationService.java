@@ -28,40 +28,112 @@ public class CalculationService {
         return (double) area* (float) height;
     }
 
+    public List<String> generateMeasurements(String xml) throws ParserConfigurationException, IOException, SAXException {
+        DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+        DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
+        InputSource is = new InputSource(new StringReader(xml));
+        Document doc = dBuilder.parse(is);
 
-    public double CalculateDataFromFile(String xml) throws ParserConfigurationException, IOException, SAXException {
+        NodeList imageAnnotations = doc.getElementsByTagName("ImageAnnotation");
+        NodeList measurements = doc.getElementsByTagName("name");
+
+        List<String> measurementsList = new ArrayList<>();
+        for(int i =0; i< imageAnnotations.getLength();i++)
+        {
+            NodeList children = imageAnnotations.item(i).getChildNodes();
+            for(int j =0; j< children.getLength();j++)
+            {
+                if(children.item(j).getAttributes() != null)
+                {
+                    if(children.item(j).getAttributes().getLength() > 0)
+                    {
+                        String name = children.item(j).getAttributes().item(0).getNodeValue();
+                        if(name.contains("Lesion") || name.contains("Prostate"))
+                            measurementsList.add(name);
+                    }
+                }
+
+
+            }
+        }
+
+
+        return measurementsList;
+    }
+
+    public double CalculateDataFromFile(String xml, String name) throws ParserConfigurationException, IOException, SAXException {
 
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
         InputSource is = new InputSource(new StringReader(xml));
         Document doc = dBuilder.parse(is);
 
-        NodeList coordinates = doc.getElementsByTagName("TwoDimensionSpatialCoordinate");
-        for (int i = 0; i < coordinates.getLength(); i++) {
 
-            Node nNode = coordinates.item(i);
-
-            System.out.println("\nCurrent Element :" + nNode.getNodeName());
-
-            if (nNode.getNodeType() == Node.ELEMENT_NODE)
+        //THIS IS MAGIC -> DON'T EVENT TRY TO ANALYZE
+        boolean compute = false;
+        NodeList imageAnnotations = doc.getElementsByTagName("ImageAnnotation");
+        for(int i =0; i< imageAnnotations.getLength();i++)
+        {
+            NodeList children = imageAnnotations.item(i).getChildNodes();
+            for(int j =0; j< children.getLength();j++)
             {
+                if(children.item(j).getAttributes() != null)
+                {
+                    if(children.item(j).getAttributes().getLength() > 0)
+                    {
+                        String measurementName = children.item(j).getAttributes().item(0).getNodeValue();
+                        if(measurementName.equals(name))
+                            compute = true;
+                    }
+                }
+                
+            }
+            if(compute)
+            {
+                    if(children.item(9) != null)
+                    {
+                        if(children.item(9).getChildNodes().getLength()>0)
+                        {
+                            if(children.item(9).getChildNodes().item(1).getChildNodes().getLength()>10)
+                            {
 
-                Element eElement = (Element) nNode;
+                                if(children.item(9).getChildNodes().item(1).getChildNodes().item(11).getChildNodes().getLength()>0)
+                                {
+                                    for(int j=0;j<children.item(9).getChildNodes().item(1).getChildNodes().item(11).getChildNodes().getLength();j++)
+                                    {
+                                        if(children.item(9).getChildNodes().item(1).getChildNodes().item(11).getChildNodes().item(j) != null)
+                                        {
+                                            if(children.item(9).getChildNodes().item(1).getChildNodes().item(11).getChildNodes().item(j).getChildNodes().getLength() > 0)
+                                            {
+                                                if(children.item(9).getChildNodes().item(1).getChildNodes().item(11).getChildNodes().item(j).getChildNodes().item(1).getAttributes().getLength() > 0)
+                                                {
+                                                    String coordinateIndex = children.item(9).getChildNodes().item(1).getChildNodes().item(11).getChildNodes().item(j).getChildNodes().item(1).getAttributes().item(0).getNodeValue();
+                                                    String x = children.item(9).getChildNodes().item(1).getChildNodes().item(11).getChildNodes().item(j).getChildNodes().item(3).getAttributes().item(0).getNodeValue();
+                                                    String y = children.item(9).getChildNodes().item(1).getChildNodes().item(11).getChildNodes().item(j).getChildNodes().item(5).getAttributes().item(0).getNodeValue();
+                                                    TwoDimensionSpatialCoordinate temp = new TwoDimensionSpatialCoordinate();
+                                                    temp.setCoordinateIndex(Integer.parseInt(coordinateIndex));
+                                                    temp.setX(Float.parseFloat(x));
+                                                    temp.setY(Float.parseFloat(y));
+                                                    vertices.add(temp);
+                                                }
+                                            }
 
 
-                System.out.println("coordinateIndex : " + eElement.getChildNodes().item(1).getAttributes().item(0).getNodeValue());
-                System.out.println("x : " + eElement.getChildNodes().item(3).getAttributes().item(0).getNodeValue());
-                System.out.println("y : " + eElement.getChildNodes().item(5).getAttributes().item(0).getNodeValue());
+                                        }
 
-                TwoDimensionSpatialCoordinate temp = new TwoDimensionSpatialCoordinate();
-                temp.setCoordinateIndex(Integer.parseInt(eElement.getChildNodes().item(1).getAttributes().item(0).getNodeValue()));
-                temp.setX(Float.parseFloat(eElement.getChildNodes().item(3).getAttributes().item(0).getNodeValue()));
-                temp.setY(Float.parseFloat(eElement.getChildNodes().item(5).getAttributes().item(0).getNodeValue()));
+                                    }
+                                }
 
 
-                vertices.add(temp);
+                            }
+                        }
+                    }
+
+
+                break;
             }
         }
+
 
         // Initialze area
         double area = 0.0;

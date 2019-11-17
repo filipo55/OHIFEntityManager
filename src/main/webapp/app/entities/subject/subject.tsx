@@ -76,9 +76,6 @@ export class Subject extends React.Component<ISubjectProps, ISubjectState> {
                   <th>
                     Project <FontAwesomeIcon icon="sort" />
                   </th>
-                  <th>
-                    Project <FontAwesomeIcon icon="sort" />
-                  </th>
                   <th />
                 </tr>
               </thead>
@@ -92,8 +89,7 @@ export class Subject extends React.Component<ISubjectProps, ISubjectState> {
                     </td>
                     <td>{subject.xnatId}</td>
                     <td>{subject.name}</td>
-                    <td>{subject.project ? <Link to={`project/${subject.project.id}`}>{subject.project.id}</Link> : ''}</td>
-                    <td>{subject.project ? <Link to={`project/${subject.project.id}`}>{subject.project.id}</Link> : ''}</td>
+                    <td>{subject.project ? <Link to={`project/${subject.project.id}`}>{subject.project.name}</Link> : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">
                         <Button tag={Link} to={`${match.url}/${subject.id}`} color="info" size="sm">

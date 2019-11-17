@@ -36,10 +36,8 @@ export class DescriptorDetail extends React.Component<IDescriptorDetailProps> {
               <span id="value">Value</span>
             </dt>
             <dd>{descriptorEntity.value}</dd>
-            <dt>Experiment</dt>
-            <dd>{descriptorEntity.experiment ? descriptorEntity.experiment.id : ''}</dd>
-            <dt>Experiment</dt>
-            <dd>{descriptorEntity.experiment ? descriptorEntity.experiment.id : ''}</dd>
+            <dt>Measurement</dt>
+            <dd>{descriptorEntity.measurement ? descriptorEntity.measurement.id : ''}</dd>
           </dl>
           <Button tag={Link} to="/entity/descriptor" replace color="info">
             <FontAwesomeIcon icon="arrow-left" /> <span className="d-none d-md-inline">Back</span>

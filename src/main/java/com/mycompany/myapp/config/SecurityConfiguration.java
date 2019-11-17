@@ -62,7 +62,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         // @formatter:off
         http
             .csrf()
-            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).ignoringAntMatchers("/api/projects/xml/all").ignoringAntMatchers("/api/projects").ignoringAntMatchers("/api/descriptors").ignoringAntMatchers("/api/subjects")
+            .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).ignoringAntMatchers("/api/projects/xml/all").ignoringAntMatchers("/api/projects").ignoringAntMatchers("/api/descriptors/calculate").ignoringAntMatchers("/api/descriptors").ignoringAntMatchers("/api/subjects")
             .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse())
             .and()
             .addFilterBefore(corsFilter, CsrfFilter.class)
@@ -83,6 +83,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .antMatchers("/api/projects").permitAll()
             .antMatchers("/api/projects/xml/all").permitAll()
             .antMatchers("/api/descriptors").permitAll()
+            .antMatchers("/api/descriptors/calculate").permitAll()
             .antMatchers("/api/subjects").permitAll()
             .antMatchers("/api/auth-info").permitAll()
             .antMatchers("/api/**").authenticated()

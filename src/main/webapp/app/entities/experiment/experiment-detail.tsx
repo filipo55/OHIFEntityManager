@@ -44,8 +44,6 @@ export class ExperimentDetail extends React.Component<IExperimentDetailProps> {
             </dd>
             <dt>Subject</dt>
             <dd>{experimentEntity.subject ? experimentEntity.subject.id : ''}</dd>
-            <dt>Subject</dt>
-            <dd>{experimentEntity.subject ? experimentEntity.subject.id : ''}</dd>
           </dl>
           <Button tag={Link} to="/entity/experiment" replace color="info">
             <FontAwesomeIcon icon="arrow-left" /> <span className="d-none d-md-inline">Back</span>

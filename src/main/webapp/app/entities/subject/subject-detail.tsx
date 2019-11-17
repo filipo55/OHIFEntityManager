@@ -38,8 +38,6 @@ export class SubjectDetail extends React.Component<ISubjectDetailProps> {
             <dd>{subjectEntity.name}</dd>
             <dt>Project</dt>
             <dd>{subjectEntity.project ? subjectEntity.project.id : ''}</dd>
-            <dt>Project</dt>
-            <dd>{subjectEntity.project ? subjectEntity.project.id : ''}</dd>
           </dl>
           <Button tag={Link} to="/entity/subject" replace color="info">
             <FontAwesomeIcon icon="arrow-left" /> <span className="d-none d-md-inline">Back</span>

@@ -97,10 +97,7 @@ export class Descriptor extends React.Component<IDescriptorProps, IDescriptorSta
                       Value <FontAwesomeIcon icon="sort" />
                     </th>
                     <th>
-                      Experiment <FontAwesomeIcon icon="sort" />
-                    </th>
-                    <th>
-                      Experiment <FontAwesomeIcon icon="sort" />
+                      Measurement <FontAwesomeIcon icon="sort" />
                     </th>
                     <th />
                   </tr>
@@ -116,10 +113,11 @@ export class Descriptor extends React.Component<IDescriptorProps, IDescriptorSta
                       <td>{descriptor.name}</td>
                       <td>{descriptor.value}</td>
                       <td>
-                        {descriptor.experiment ? <Link to={`experiment/${descriptor.experiment.id}`}>{descriptor.experiment.id}</Link> : ''}
-                      </td>
-                      <td>
-                        {descriptor.experiment ? <Link to={`experiment/${descriptor.experiment.id}`}>{descriptor.experiment.id}</Link> : ''}
+                        {descriptor.measurement ? (
+                          <Link to={`measurement/${descriptor.measurement.id}`}>{descriptor.measurement.name}</Link>
+                        ) : (
+                          ''
+                        )}
                       </td>
                       <td className="text-right">
                         <div className="btn-group flex-btn-group-container">

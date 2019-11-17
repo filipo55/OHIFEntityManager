@@ -21,14 +21,12 @@ export interface ISubjectUpdateProps extends StateProps, DispatchProps, RouteCom
 export interface ISubjectUpdateState {
   isNew: boolean;
   projectId: string;
-  projectId: string;
 }
 
 export class SubjectUpdate extends React.Component<ISubjectUpdateProps, ISubjectUpdateState> {
   constructor(props) {
     super(props);
     this.state = {
-      projectId: '0',
       projectId: '0',
       isNew: !this.props.match.params || !this.props.match.params.id
     };
@@ -104,19 +102,6 @@ export class SubjectUpdate extends React.Component<ISubjectUpdateProps, ISubject
                     Name
                   </Label>
                   <AvField id="subject-name" type="text" name="name" />
-                </AvGroup>
-                <AvGroup>
-                  <Label for="subject-project">Project</Label>
-                  <AvInput id="subject-project" type="select" className="form-control" name="project.id">
-                    <option value="" key="0" />
-                    {projects
-                      ? projects.map(otherEntity => (
-                          <option value={otherEntity.id} key={otherEntity.id}>
-                            {otherEntity.id}
-                          </option>
-                        ))
-                      : null}
-                  </AvInput>
                 </AvGroup>
                 <AvGroup>
                   <Label for="subject-project">Project</Label>

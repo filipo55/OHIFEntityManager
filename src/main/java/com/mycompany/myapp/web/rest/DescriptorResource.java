@@ -10,6 +10,7 @@ import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.PaginationUtil;
 import io.github.jhipster.web.util.ResponseUtil;
+import javassist.runtime.Desc;
 import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,12 +71,26 @@ public class DescriptorResource {
     /**
      * {@code POST  /descriptors} : Create a new descriptor.
      *
-     * @param JSON the descriptor to create.
+     * @param descriptor the descriptor to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new descriptor, or with status {@code 400 (Bad Request)} if the descriptor has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
     @PostMapping("/descriptors")
-    public ResponseEntity<Descriptor> createDescriptor(@RequestBody String JSON) throws URISyntaxException, IOException, SAXException, ParserConfigurationException, ParseException, JSONException {
+    public ResponseEntity<Descriptor> createDescriptor(@RequestBody Descriptor descriptor) throws URISyntaxException, IOException, SAXException, ParserConfigurationException, ParseException, JSONException {
+        log.debug("REST request to save Descriptor : {}");
+
+        if (descriptor.getId() != null) {
+            throw new BadRequestAlertException("A new measurement cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        Descriptor result = descriptorService.save(descriptor);
+
+        return ResponseEntity.created(new URI("/api/descriptors/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    @PostMapping("/descriptors/calculate")
+    public void calculateDescriptor(@RequestBody String JSON) throws URISyntaxException, IOException, SAXException, ParserConfigurationException, ParseException, JSONException {
         log.debug("REST request to save Descriptor : {}");
 
         //Sync with XNAT DB
@@ -99,11 +114,12 @@ public class DescriptorResource {
             measurement.setName(measurements.get(i));
             if(measurements.get(i).contains("Lesion"))
             {
-                measurement.setType(MeasurementType.LESION);
+                //measurement.setType(MeasurementType.LESION);
+                measurement = measurementService.save(measurement);
             }
-            else if(measurements.get(i).contains("Cancer"))
+            else if(measurements.get(i).contains("Prostate"))
             {
-                measurement.setType(MeasurementType.CANCER);
+                //measurement.setType(MeasurementType.CANCER);
                 measurement = measurementService.save(measurement);
             }
             //Area descriptor
@@ -121,15 +137,9 @@ public class DescriptorResource {
             volumeDescriptor.setMeasurement(measurement);
             descriptorService.save(volumeDescriptor);
         }
-
-
-
-        return (ResponseEntity<Descriptor>) ResponseEntity.ok();
-
-//        return ResponseEntity.created(new URI("/api/descriptors/" + result.getId()))
-//            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
-//            .body(result);
     }
+
+
 
     /**
      * {@code PUT  /descriptors} : Updates an existing descriptor.

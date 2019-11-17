@@ -20,16 +20,14 @@ export interface IDescriptorUpdateProps extends StateProps, DispatchProps, Route
 
 export interface IDescriptorUpdateState {
   isNew: boolean;
-  experimentId: string;
-  experimentId: string;
+  measurementId: string;
 }
 
 export class DescriptorUpdate extends React.Component<IDescriptorUpdateProps, IDescriptorUpdateState> {
   constructor(props) {
     super(props);
     this.state = {
-      experimentId: '0',
-      experimentId: '0',
+      measurementId: '0',
       isNew: !this.props.match.params || !this.props.match.params.id
     };
   }
@@ -102,19 +100,6 @@ export class DescriptorUpdate extends React.Component<IDescriptorUpdateProps, ID
                     Value
                   </Label>
                   <AvField id="descriptor-value" type="string" className="form-control" name="value" />
-                </AvGroup>
-                <AvGroup>
-                  <Label for="descriptor-experiment">Experiment</Label>
-                  <AvInput id="descriptor-experiment" type="select" className="form-control" name="experiment.id">
-                    <option value="" key="0" />
-                    {experiments
-                      ? experiments.map(otherEntity => (
-                          <option value={otherEntity.id} key={otherEntity.id}>
-                            {otherEntity.id}
-                          </option>
-                        ))
-                      : null}
-                  </AvInput>
                 </AvGroup>
                 <AvGroup>
                   <Label for="descriptor-experiment">Experiment</Label>

@@ -71,10 +71,8 @@ export class Measurement extends React.Component<IMeasurementProps, IMeasurement
                     Name <FontAwesomeIcon icon="sort" />
                   </th>
                   <th>
-                    Measurement <FontAwesomeIcon icon="sort" />
-                  </th>
-                  <th>
-                    Experiment <FontAwesomeIcon icon="sort" />
+                    Experiment
+                    <FontAwesomeIcon icon="sort" />
                   </th>
                   <th />
                 </tr>
@@ -89,15 +87,8 @@ export class Measurement extends React.Component<IMeasurementProps, IMeasurement
                     </td>
                     <td>{measurement.name}</td>
                     <td>
-                      {measurement.measurement ? (
-                        <Link to={`experiment/${measurement.measurement.id}`}>{measurement.measurement.id}</Link>
-                      ) : (
-                        ''
-                      )}
-                    </td>
-                    <td>
                       {measurement.experiment ? (
-                        <Link to={`experiment/${measurement.experiment.id}`}>{measurement.experiment.id}</Link>
+                        <Link to={`experiment/${measurement.experiment.id}`}>{measurement.experiment.name}</Link>
                       ) : (
                         ''
                       )}

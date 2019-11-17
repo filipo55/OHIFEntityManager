@@ -21,14 +21,12 @@ export interface IExperimentUpdateProps extends StateProps, DispatchProps, Route
 export interface IExperimentUpdateState {
   isNew: boolean;
   subjectId: string;
-  subjectId: string;
 }
 
 export class ExperimentUpdate extends React.Component<IExperimentUpdateProps, IExperimentUpdateState> {
   constructor(props) {
     super(props);
     this.state = {
-      subjectId: '0',
       subjectId: '0',
       isNew: !this.props.match.params || !this.props.match.params.id
     };
@@ -110,19 +108,6 @@ export class ExperimentUpdate extends React.Component<IExperimentUpdateProps, IE
                     Date Created
                   </Label>
                   <AvField id="experiment-dateCreated" type="date" className="form-control" name="dateCreated" />
-                </AvGroup>
-                <AvGroup>
-                  <Label for="experiment-subject">Subject</Label>
-                  <AvInput id="experiment-subject" type="select" className="form-control" name="subject.id">
-                    <option value="" key="0" />
-                    {subjects
-                      ? subjects.map(otherEntity => (
-                          <option value={otherEntity.id} key={otherEntity.id}>
-                            {otherEntity.id}
-                          </option>
-                        ))
-                      : null}
-                  </AvInput>
                 </AvGroup>
                 <AvGroup>
                   <Label for="experiment-subject">Subject</Label>

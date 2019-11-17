@@ -79,9 +79,6 @@ export class Experiment extends React.Component<IExperimentProps, IExperimentSta
                   <th>
                     Subject <FontAwesomeIcon icon="sort" />
                   </th>
-                  <th>
-                    Subject <FontAwesomeIcon icon="sort" />
-                  </th>
                   <th />
                 </tr>
               </thead>
@@ -98,8 +95,7 @@ export class Experiment extends React.Component<IExperimentProps, IExperimentSta
                     <td>
                       <TextFormat type="date" value={experiment.dateCreated} format={APP_LOCAL_DATE_FORMAT} />
                     </td>
-                    <td>{experiment.subject ? <Link to={`subject/${experiment.subject.id}`}>{experiment.subject.id}</Link> : ''}</td>
-                    <td>{experiment.subject ? <Link to={`subject/${experiment.subject.id}`}>{experiment.subject.id}</Link> : ''}</td>
+                    <td>{experiment.subject ? <Link to={`subject/${experiment.subject.id}`}>{experiment.subject.name}</Link> : ''}</td>
                     <td className="text-right">
                       <div className="btn-group flex-btn-group-container">
                         <Button tag={Link} to={`${match.url}/${experiment.id}`} color="info" size="sm">

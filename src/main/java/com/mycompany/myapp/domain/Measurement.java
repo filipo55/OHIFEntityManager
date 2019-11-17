@@ -5,6 +5,8 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -21,6 +23,7 @@ public class Measurement implements Serializable {
     private static final long serialVersionUID = 1L;
 
     @Id
+    //@GeneratedValue(strategy= GenerationType.AUTO)
     private String id;
 
     @Field("name")

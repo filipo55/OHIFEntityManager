@@ -1,5 +1,6 @@
 package com.mycompany.myapp.service;
 
+//import org.apache.spark.SparkConf;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -18,11 +19,29 @@ import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.List;
 
+
+//import org.apache.spark.api.java.JavaPairRDD;
+//import org.apache.spark.api.java.JavaRDD;
+//import org.apache.spark.api.java.JavaSparkContext;
+//import org.apache.spark.api.java.function.Function2;
+//import org.apache.spark.api.java.function.PairFunction;
+
+
 @Component
 public class CalculationService {
 
 
     List<TwoDimensionSpatialCoordinate> vertices = new ArrayList<>();
+//    SparkConf sparkConf;
+//    JavaSparkContext javaSparkContext;
+
+//
+//    public CalculationService()
+//    {
+//        sparkConf = new SparkConf().setMaster("local[*]").setAppName("SparkLesionCalculation");
+//        javaSparkContext = new JavaSparkContext(sparkConf);
+//
+//    }
 
     public double CalculateVolume(double area, int height)
     {
@@ -49,7 +68,7 @@ public class CalculationService {
                     if(children.item(j).getAttributes().getLength() > 0)
                     {
                         String name = children.item(j).getAttributes().item(0).getNodeValue();
-                        if(name.contains("Lesion") || name.contains("Prostate"))
+                        if(name.contains("Lesion") || name.contains("Prostate")|| name.contains("segment") || name.contains("contour"))
                             measurementsList.add(name);
                     }
                 }
@@ -61,6 +80,8 @@ public class CalculationService {
 
         return measurementsList;
     }
+
+
 
     public double CalculateDataFromFile(String xml, String name) throws ParserConfigurationException, IOException, SAXException {
 
@@ -136,8 +157,12 @@ public class CalculationService {
         }
 
 
+
+        //JavaRDD<TwoDimensionSpatialCoordinate> coordinateJavaRDD = javaSparkContext.parallelize(vertices);
+
         // Initialze area
         double area = 0.0;
+        
 
         // Calculate value of shoelace formula
         int j = vertices.size() - 1;

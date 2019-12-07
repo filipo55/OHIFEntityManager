@@ -94,6 +94,7 @@ public class SyncService {
 
     private JSONArray findXnatData(String data) throws IOException {
         //Send http request
+        //HttpGet request = new HttpGet("http://192.168.110.29:/data/archive/" + data);
         HttpGet request = new HttpGet("http://localhost:/data/archive/" + data);
         HttpResponse response = client.execute(request);
 

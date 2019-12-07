@@ -112,12 +112,12 @@ public class DescriptorResource {
             Measurement measurement = new Measurement();
             measurement.setExperiment(experiment);
             measurement.setName(measurements.get(i));
-            if(measurements.get(i).contains("Lesion"))
+            if(measurements.get(i).contains("Lesion") || measurements.get(i).contains("segment"))
             {
                 //measurement.setType(MeasurementType.LESION);
                 measurement = measurementService.save(measurement);
             }
-            else if(measurements.get(i).contains("Prostate"))
+            else if(measurements.get(i).contains("Prostate") || measurements.get(i).contains("contour"))
             {
                 //measurement.setType(MeasurementType.CANCER);
                 measurement = measurementService.save(measurement);

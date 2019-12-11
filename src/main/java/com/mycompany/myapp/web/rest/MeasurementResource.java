@@ -1,5 +1,6 @@
 package com.mycompany.myapp.web.rest;
 
+import com.mycompany.myapp.domain.Experiment;
 import com.mycompany.myapp.domain.Measurement;
 import com.mycompany.myapp.service.MeasurementService;
 import com.mycompany.myapp.web.rest.errors.BadRequestAlertException;
@@ -123,5 +124,12 @@ public class MeasurementResource {
         log.debug("REST request to delete Measurement : {}", id);
         measurementService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id)).build();
+    }
+
+    @GetMapping("/measurements/experiment/{id}")
+    public ResponseEntity<List<Measurement>> getMeasurementOfExperiment(@PathVariable String id) {
+        log.debug("REST request to get MeasurementOfExperiment : {}", id);
+        List<Measurement> measurements = measurementService.findMeasurementsWithExperiment(id);
+        return ResponseEntity.ok().body(measurements);
     }
 }

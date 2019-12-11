@@ -21,6 +21,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -182,5 +183,20 @@ public class ExperimentService {
             }
         }
         return null;
+    }
+
+    public List<Experiment> findExperimentWithSubject(String id)
+    {
+        log.debug("Request to get ExperimentWithSubject : {}", id);
+        List<Experiment> experiments = experimentRepository.findAll();
+        List<Experiment> result = new ArrayList<>();
+        for(int i =0; i< experiments.size();i++)
+        {
+            if(experiments.get(i).getSubject().getId().matches(id))
+            {
+                result.add(experiments.get(i));
+            }
+        }
+        return result;
     }
 }

@@ -189,6 +189,13 @@ public class DescriptorResource {
         return ResponseUtil.wrapOrNotFound(descriptor);
     }
 
+    @GetMapping("/descriptors/measurement/{id}")
+    public ResponseEntity<List<Descriptor>> getDescriptorOfMeasurement(@PathVariable String id) {
+        log.debug("REST request to get DescriptorOfMeasurement : {}", id);
+        List<Descriptor> descriptor = descriptorService.findDescriptorsWithMeasurement(id);
+        return ResponseEntity.ok().body(descriptor);
+    }
+
     /**
      * {@code DELETE  /descriptors/:id} : delete the "id" descriptor.
      *

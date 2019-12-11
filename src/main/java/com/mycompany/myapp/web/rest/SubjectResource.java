@@ -125,4 +125,11 @@ public class SubjectResource {
         subjectService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id)).build();
     }
+
+    @GetMapping("/subjects/project/{id}")
+    public ResponseEntity<List<Subject>> getSubjectsOfProject(@PathVariable String id) {
+        log.debug("REST request to get SubjectsOfProject : {}", id);
+        List<Subject> subjects = subjectService.findSubjectsWithProject(id);
+        return ResponseEntity.ok().body(subjects);
+    }
 }

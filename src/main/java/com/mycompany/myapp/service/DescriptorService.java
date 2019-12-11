@@ -2,6 +2,7 @@ package com.mycompany.myapp.service;
 
 import com.mycompany.myapp.domain.Descriptor;
 import com.mycompany.myapp.repository.DescriptorRepository;
+import org.checkerframework.checker.nullness.Opt;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,6 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -67,5 +70,20 @@ public class DescriptorService {
     public void delete(String id) {
         log.debug("Request to delete Descriptor : {}", id);
         descriptorRepository.deleteById(id);
+    }
+
+    public List<Descriptor> findDescriptorsWithMeasurement(String id)
+    {
+        log.debug("Request to get Measurement : {}", id);
+        List<Descriptor> descriptors = descriptorRepository.findAll();
+        List<Descriptor> result = new ArrayList<>();
+        for(int i =0; i< descriptors.size();i++)
+        {
+            if(descriptors.get(i).getMeasurement().getId().matches(id))
+            {
+                result.add(descriptors.get(i));
+            }
+        }
+        return result;
     }
 }

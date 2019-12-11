@@ -124,4 +124,11 @@ public class ExperimentResource {
         experimentService.delete(id);
         return ResponseEntity.noContent().headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id)).build();
     }
+
+    @GetMapping("/experiments/subject/{id}")
+    public ResponseEntity<List<Experiment>> getExperimentOfSubject(@PathVariable String id) {
+        log.debug("REST request to get ExperimentOfSubject : {}", id);
+        List<Experiment> experiments = experimentService.findExperimentWithSubject(id);
+        return ResponseEntity.ok().body(experiments);
+    }
 }

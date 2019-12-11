@@ -19,6 +19,8 @@ import org.apache.http.client.HttpClient;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
+
+import java.util.ArrayList;
 import java.util.Optional;
 
 import java.io.IOException;
@@ -178,5 +180,20 @@ public class SubjectService {
             }
         }
         return null;
+    }
+
+    public List<Subject> findSubjectsWithProject (String id)
+    {
+        log.debug("Request to get SubjectsWithProject : {}", id);
+        List<Subject> subjects = subjectRepository.findAll();
+        List<Subject> result = new ArrayList<>();
+        for(int i =0; i< subjects.size();i++)
+        {
+            if(subjects.get(i).getProject().getId().matches(id))
+            {
+                result.add(subjects.get(i));
+            }
+        }
+        return result;
     }
 }

@@ -9,6 +9,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -67,5 +69,20 @@ public class MeasurementService {
     public void delete(String id) {
         log.debug("Request to delete Measurement : {}", id);
         measurementRepository.deleteById(id);
+    }
+
+    public List<Measurement> findMeasurementsWithExperiment(String id)
+    {
+        log.debug("Request to get Experiment : {}", id);
+        List<Measurement> measurements = measurementRepository.findAll();
+        List<Measurement> result = new ArrayList<>();
+        for(int i =0; i< measurements.size();i++)
+        {
+            if(measurements.get(i).getExperiment().getId().matches(id))
+            {
+                result.add(measurements.get(i));
+            }
+        }
+        return result;
     }
 }

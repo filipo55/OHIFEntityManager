@@ -86,4 +86,14 @@ public class DescriptorService {
         }
         return result;
     }
+
+    public void SyncDescriptors()
+    {
+        List<Descriptor> descriptors = descriptorRepository.findAll();
+        for(int i =0; i< descriptors.size();i++)
+        {
+            if(descriptors.get(i).getMeasurement() == null)
+                delete(descriptors.get(i).getId());
+        }
+    }
 }

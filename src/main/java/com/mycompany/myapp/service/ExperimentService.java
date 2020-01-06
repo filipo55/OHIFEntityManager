@@ -122,13 +122,20 @@ public class ExperimentService {
                         experiment.setDateCreated(date);
                     }
 
-                    if(experiment.getSubject().getId().matches(subject.getId()))
+                    if(experiment.getSubject() == null)
                     {
-                        log.debug("Found experiment and the subject matches as well :) : {}", xnatID);
+                        delete(experiment.getId());
                     }
                     else
                     {
-                        experiment.setSubject(subject);
+                        if(experiment.getSubject().getId().matches(subject.getId()))
+                        {
+                            log.debug("Found experiment and the subject matches as well :) : {}", xnatID);
+                        }
+                        else
+                        {
+                            experiment.setSubject(subject);
+                        }
                     }
 
 
@@ -163,8 +170,13 @@ public class ExperimentService {
                 }
                 if(!matches)
                 {
+
+                    if(experiments.get(i).getSubject() == null)
+                    {
+                        delete(experiments.get(i).getId());
+                    }
 //If experiment has the same subject, but was not found then remove
-                    if(experiments.get(i).getSubject().getId().matches(subject.getId()))
+                    else if(experiments.get(i).getSubject().getId().matches(subject.getId()))
                         delete(experiments.get(i).getId());
                 }
             }

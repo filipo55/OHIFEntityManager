@@ -1,6 +1,13 @@
 package com.mycompany.myapp.service;
 
 //import org.apache.spark.SparkConf;
+import com.google.gson.Gson;
+import com.mycompany.myapp.jms.JmsConfig;
+import com.mycompany.myapp.jms.MyMessageCreator;
+import org.apache.activemq.command.ActiveMQMapMessage;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jms.core.JmsTemplate;
+import org.springframework.jms.core.MessageCreator;
 import org.springframework.stereotype.Component;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -10,13 +17,18 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import com.mycompany.myapp.*;
 
+import javax.jms.*;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.soap.MessageFactory;
+import javax.xml.soap.SOAPConstants;
+import javax.xml.soap.SOAPException;
 import java.io.File;
 import java.io.IOException;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.Enumeration;
 import java.util.List;
 
 
@@ -32,6 +44,10 @@ public class CalculationService {
 
 
     List<TwoDimensionSpatialCoordinate> vertices = new ArrayList<>();
+
+
+     @Autowired
+    JmsConfig jmsConfig;
 //    SparkConf sparkConf;
 //    JavaSparkContext javaSparkContext;
 
@@ -68,7 +84,7 @@ public class CalculationService {
                     if(children.item(j).getAttributes().getLength() > 0)
                     {
                         String name = children.item(j).getAttributes().item(0).getNodeValue();
-                        if(name.contains("Lesion") || name.contains("Prostate")|| name.contains("segment") || name.contains("contour"))
+                        if(name.contains("LESION") || name.contains("ORGAN")|| name.contains("segment") || name.contains("contour"))
                             measurementsList.add(name);
                     }
                 }
@@ -83,7 +99,7 @@ public class CalculationService {
 
 
 
-    public double CalculateDataFromFile(String xml, String name) throws ParserConfigurationException, IOException, SAXException {
+    public double CalculateDataFromFile(String xml, String name) throws ParserConfigurationException, IOException, SAXException, SOAPException, JMSException {
 
         DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -159,6 +175,11 @@ public class CalculationService {
 
 
         //JavaRDD<TwoDimensionSpatialCoordinate> coordinateJavaRDD = javaSparkContext.parallelize(vertices);
+
+
+        String json = new Gson().toJson(vertices);
+        jmsConfig.jmsTemplate().convertAndSend("VerticesQueue",json);
+
 
         // Initialze area
         double area = 0.0;

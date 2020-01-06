@@ -27,7 +27,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.xml.sax.SAXException;
 
+import javax.jms.JMSException;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.soap.SOAPException;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -90,7 +92,7 @@ public class DescriptorResource {
     }
 
     @PostMapping("/descriptors/calculate")
-    public void calculateDescriptor(@RequestBody String JSON) throws URISyntaxException, IOException, SAXException, ParserConfigurationException, ParseException, JSONException {
+    public void calculateDescriptor(@RequestBody String JSON) throws URISyntaxException, IOException, SAXException, ParserConfigurationException, ParseException, JSONException, JMSException, SOAPException {
         log.debug("REST request to save Descriptor : {}");
 
         //Sync with XNAT DB
@@ -112,12 +114,12 @@ public class DescriptorResource {
             Measurement measurement = new Measurement();
             measurement.setExperiment(experiment);
             measurement.setName(measurements.get(i));
-            if(measurements.get(i).contains("Lesion") || measurements.get(i).contains("segment"))
+            if(measurements.get(i).contains("LESION") || measurements.get(i).contains("segment"))
             {
                 //measurement.setType(MeasurementType.LESION);
                 measurement = measurementService.save(measurement);
             }
-            else if(measurements.get(i).contains("Prostate") || measurements.get(i).contains("contour"))
+            else if(measurements.get(i).contains("ORGAN") || measurements.get(i).contains("contour"))
             {
                 //measurement.setType(MeasurementType.CANCER);
                 measurement = measurementService.save(measurement);

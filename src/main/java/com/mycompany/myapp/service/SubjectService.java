@@ -122,15 +122,22 @@ public class SubjectService {
                     {
                         subject.setName(name);
                     }
-
-                    if(subject.getProject().getXnatId().matches(projectID))
+                    if(subject.getProject() == null)
                     {
-                        log.debug("Found subject and the project matches as well :) : {}", xnatID);
+                        delete(subject.getId());
                     }
                     else
                     {
-                        subject.setProject(projectService.findOneByXnatID(projectID));
+                        if(subject.getProject().getXnatId().matches(projectID))
+                        {
+                            log.debug("Found subject and the project matches as well :) : {}", xnatID);
+                        }
+                        else
+                        {
+                            subject.setProject(projectService.findOneByXnatID(projectID));
+                        }
                     }
+
                 }
                 else
                 {

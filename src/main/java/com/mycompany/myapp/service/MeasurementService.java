@@ -5,6 +5,7 @@ import com.mycompany.myapp.repository.MeasurementRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -22,6 +23,7 @@ public class MeasurementService {
     private final Logger log = LoggerFactory.getLogger(MeasurementService.class);
 
     private final MeasurementRepository measurementRepository;
+
 
     public MeasurementService(MeasurementRepository measurementRepository) {
         this.measurementRepository = measurementRepository;
@@ -84,5 +86,17 @@ public class MeasurementService {
             }
         }
         return result;
+    }
+    public void SyncMeasurements()
+    {
+
+        List<Measurement> measurements = measurementRepository.findAll();
+        for (int i =0; i< measurements.size();i++)
+        {
+            if(measurements.get(i).getExperiment() == null)
+            {
+                delete(measurements.get(i).getId());
+            }
+        }
     }
 }
